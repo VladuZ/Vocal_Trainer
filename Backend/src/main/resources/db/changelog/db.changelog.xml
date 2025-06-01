@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+    <changeSet id="1" author="vlad">
+        <createTable tableName="users">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="vlad">
+        <createSequence sequenceName="users_seq"/>
+    </changeSet>
+    <changeSet id="3" author="vlad">
+        <createTable tableName="exercises">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="owner_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data" type="blob">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bpm" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="exercises"
+                                 baseColumnNames="owner_id"
+                                 constraintName="exercise_user_FK"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+        <createSequence sequenceName="exercises_seq"/>
+    </changeSet>
+    <changeSet id="4" author="vlad">
+        <createTable tableName="sharings">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="owner_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exercise_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="sharings"
+                                 baseColumnNames="owner_id"
+                                 constraintName="owner_id_FK"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="sharings"
+                                 baseColumnNames="target_id"
+                                 constraintName="target_id_FK"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="sharings"
+                                 baseColumnNames="exercise_id"
+                                 constraintName="exercise_id_FK"
+                                 referencedTableName="exercises"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+        <createSequence sequenceName="sharings_seq"/>
+    </changeSet>
+</databaseChangeLog>
